@@ -1,0 +1,116 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <style name="Base.Theme.ListaSpam" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/primaryColor</item>
+        <item name="colorPrimaryVariant">@color/primaryColorDark</item>
+        <item name="colorSecondary">@color/primaryColor</item>
+        <item name="colorOnPrimary">@color/primaryTextOnColor</item>
+        <item name="colorSurface">@color/surfaceColor</item>
+        <item name="android:windowBackground">@color/backgroundColor</item>
+        <item name="android:textColor">@color/textColor</item>
+        <item name="android:textColorSecondary">@color/textSecondaryColor</item>
+        <item name="materialButtonStyle">@style/Widget.ListaSpam.Button</item>
+        <item name="editTextStyle">@style/Widget.ListaSpam.EditText</item>
+        <item name="checkboxStyle">@style/Widget.ListaSpam.CompoundButton.CheckBox</item>
+        <item name="radioButtonStyle">@style/Widget.ListaSpam.CompoundButton.RadioButton</item>
+        <item name="toolbarStyle">@style/Widget.ListaSpam.Toolbar</item>
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay.ListaSpam</item>
+    </style>
+
+    <style name="Theme.ListaSpam" parent="Base.Theme.ListaSpam" />
+
+    <style name="Widget.ListaSpam.Button" parent="Widget.MaterialComponents.Button">
+        <item name="android:minHeight">52dp</item>
+        <item name="cornerRadius">14dp</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="android:paddingLeft">18dp</item>
+        <item name="android:paddingRight">18dp</item>
+        <item name="backgroundTint">@color/primaryColor</item>
+        <item name="iconTint">@color/primaryTextOnColor</item>
+        <item name="android:textColor">@color/primaryTextOnColor</item>
+        <item name="rippleColor">@color/borderColor</item>
+        <item name="elevation">0dp</item>
+    </style>
+
+    <style name="Widget.ListaSpam.EditText" parent="Widget.MaterialComponents.TextInputEditText.OutlinedBox">
+        <item name="android:textColor">@color/textColor</item>
+        <item name="android:textColorHint">@color/textSecondaryColor</item>
+        <item name="colorControlNormal">@color/borderColor</item>
+        <item name="colorControlActivated">@color/primaryColor</item>
+    </style>
+
+    <style name="Widget.ListaSpam.CompoundButton.CheckBox" parent="Widget.MaterialComponents.CompoundButton.CheckBox">
+        <item name="buttonTint">@color/primaryColor</item>
+        <item name="android:textColor">@color/textColor</item>
+    </style>
+
+    <style name="Widget.ListaSpam.CompoundButton.RadioButton" parent="Widget.MaterialComponents.CompoundButton.RadioButton">
+        <item name="buttonTint">@color/primaryColor</item>
+        <item name="android:textColor">@color/textColor</item>
+    </style>
+
+    <style name="Widget.ListaSpam.Toolbar" parent="Widget.MaterialComponents.Toolbar">
+        <item name="android:background">@android:color/transparent</item>
+        <item name="titleTextColor">@color/textColor</item>
+        <item name="subtitleTextColor">@color/textSecondaryColor</item>
+        <item name="titleTextAppearance">@style/TextAppearance.ListaSpam.ToolbarTitle</item>
+        <item name="subtitleTextAppearance">@style/TextAppearance.ListaSpam.ToolbarSubtitle</item>
+        <item name="navigationIconTint">@color/textColor</item>
+        <item name="android:minHeight">52dp</item>
+    </style>
+
+    <style name="PreferenceThemeOverlay.ListaSpam" parent="@style/PreferenceThemeOverlay.v14.Material">
+        <item name="preferenceCategoryTitleTextAppearance">@style/TextAppearance.ListaSpam.PreferenceCategory</item>
+        <item name="preferenceFragmentCompatStyle">@style/Widget.ListaSpam.PreferenceFragmentCompat</item>
+        <item name="preferenceCategoryStyle">@style/Widget.ListaSpam.PreferenceCategory</item>
+        <item name="checkBoxPreferenceStyle">@style/Widget.ListaSpam.CheckBoxPreference</item>
+        <item name="preferenceStyle">@style/Widget.ListaSpam.Preference</item>
+        <item name="dialogPreferenceStyle">@style/Widget.ListaSpam.Preference</item>
+    </style>
+
+    <style name="TextAppearance.ListaSpam.PreferenceCategory" parent="TextAppearance.MaterialComponents.Subtitle2">
+        <item name="android:textColor">@color/textSecondaryColor</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="TextAppearance.ListaSpam.ToolbarTitle" parent="TextAppearance.MaterialComponents.Headline6">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="TextAppearance.ListaSpam.ToolbarSubtitle" parent="TextAppearance.MaterialComponents.Body2">
+        <item name="android:textSize">10sp</item>
+    </style>
+
+    <style name="Widget.ListaSpam.PreferenceFragmentCompat" parent="PreferenceFragment.Material">
+        <item name="allowDividerAfterLastItem">false</item>
+    </style>
+
+    <style name="Widget.ListaSpam.PreferenceCategory" parent="Preference.Category.Material">
+        <item name="android:layout">@layout/preference_category_item</item>
+    </style>
+
+    <style name="Widget.ListaSpam.Preference" parent="Preference.Material">
+        <item name="android:layout">@layout/preference_item</item>
+    </style>
+
+    <style name="Widget.ListaSpam.CheckBoxPreference" parent="Preference.CheckBoxPreference.Material">
+        <item name="android:layout">@layout/preference_item_checkbox</item>
+    </style>
+
+    <style name="Widget.ListaSpam.KeyboardButton" parent="Widget.MaterialComponents.Button">
+        <item name="android:minHeight">56dp</item>
+        <item name="cornerRadius">18dp</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textColor">@color/textColor</item>
+        <item name="backgroundTint">@color/white</item>
+        <item name="strokeColor">@color/borderColor</item>
+        <item name="strokeWidth">1dp</item>
+        <item name="rippleColor">@color/borderColor</item>
+        <item name="elevation">8dp</item>
+        <item name="android:stateListAnimator">@animator/keyboard_button_state</item>
+    </style>
+</resources>

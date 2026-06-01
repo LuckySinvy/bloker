@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory
+        android:title="@string/tools_category_title"
+        app:iconSpaceReserved="false">
+
+        <Preference
+            android:key="pref_export_config"
+            android:summary="@string/export_config_summary"
+            android:title="@string/export_config"
+            app:iconSpaceReserved="false" />
+
+        <Preference
+            android:key="pref_import_config_file"
+            android:summary="@string/import_from_file_summary"
+            android:title="@string/import_from_file"
+            app:iconSpaceReserved="false" />
+
+        <Preference
+            android:key="pref_import_config_url"
+            android:summary="@string/import_from_url_summary"
+            android:title="@string/import_from_url"
+            app:iconSpaceReserved="false" />
+
+        <Preference
+            android:key="pref_test_number"
+            android:summary="@string/test_number_summary"
+            android:title="@string/test_number"
+            app:iconSpaceReserved="false" />
+
+    </PreferenceCategory>
+
+    <!-- General Blocking Settings -->
+    <PreferenceCategory
+        android:title="@string/pref_category_general_blocking"
+        app:iconSpaceReserved="false">
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="pref_enable_blocking"
+            android:summary="@string/pref_enable_blocking_summary"
+            android:title="@string/pref_enable_blocking_title"
+            app:iconSpaceReserved="false" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/pref_category_tellows_api"
+        app:iconSpaceReserved="false">
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="pref_tellows_api"
+            android:summary="@string/pref_filter_tellows_summary"
+            android:title="@string/pref_filter_tellows_title"
+            app:iconSpaceReserved="false" />
+
+        <Preference
+            android:key="pref_tellows_country_fixed"
+            android:selectable="false"
+            android:summary="@string/pref_filter_tellows_country_fixed"
+            android:title="@string/pref_filter_tellows_country_fixed"
+            app:iconSpaceReserved="false" />
+
+    </PreferenceCategory>
+
+    <!-- Pattern Blocking -->
+    <PreferenceCategory
+        android:title="@string/pref_category_pattern_blocking"
+        app:iconSpaceReserved="false">
+
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="pref_enable_pattern_blocking"
+            android:summary="@string/pref_enable_pattern_blocking_summary"
+            android:title="@string/pref_enable_pattern_blocking_title"
+            app:iconSpaceReserved="false" />
+
+        <Preference
+            android:key="pref_pattern_list"
+            android:summary="@string/pref_pattern_list_summary"
+            android:title="@string/pref_pattern_list_title"
+            android:dialogMessage="@string/pref_pattern_list_example"
+            app:iconSpaceReserved="false" />
+
+    </PreferenceCategory>
+
+    <!-- Other Blocking Options -->
+    <PreferenceCategory
+        android:title="@string/pref_category_other_options"
+        app:iconSpaceReserved="false">
+
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="pref_block_non_contacts"
+            android:summary="@string/pref_block_non_contacts_summary"
+            android:title="@string/pref_block_non_contacts_title"
+            app:iconSpaceReserved="false" />
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="pref_block_hidden_numbers"
+            android:summary="@string/pref_block_hidden_numbers_summary"
+            android:title="@string/pref_block_hidden_numbers_title"
+            app:iconSpaceReserved="false" />
+
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="pref_block_international_numbers"
+            android:summary="@string/pref_block_international_numbers_summary"
+            android:title="@string/pref_block_international_numbers_title"
+            app:iconSpaceReserved="false" />
+
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="pref_block_stir_shaken_risk"
+            android:summary="@string/pref_block_stir_shaken_risk_summary"
+            android:title="@string/pref_block_stir_shaken_risk_title"
+            app:iconSpaceReserved="false" />
+
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="pref_mute_instead_of_block"
+            android:summary="@string/pref_mute_instead_of_block_summary"
+            android:title="@string/pref_mute_instead_of_block_title"
+            app:iconSpaceReserved="false" />
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="pref_enable_update_check"
+            android:summary="@string/pref_enable_update_check_summary"
+            android:title="@string/pref_enable_update_check_title"
+            app:iconSpaceReserved="false" />
+
+    </PreferenceCategory>
+
+    <!-- Notifications -->
+    <PreferenceCategory
+        android:title="@string/pref_category_notifications"
+        app:iconSpaceReserved="false">
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="pref_show_notification"
+            android:summary="@string/pref_show_notification_summary"
+            android:title="@string/pref_show_notification_title"
+            app:iconSpaceReserved="false" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>
