@@ -34,6 +34,8 @@
     <string name="pattern_save_done">保存</string>
     <string name="pattern_delete">删除</string>
     <string name="pattern_edit_note">编辑备注</string>
+    <string name="pattern_action_edit">编辑</string>
+    <string name="pattern_action_delete">删除</string>
     <string name="pattern_add_success">规则已添加</string>
     <string name="pattern_delete_success">规则已删除</string>
     <string name="pattern_note_saved">备注已保存</string>

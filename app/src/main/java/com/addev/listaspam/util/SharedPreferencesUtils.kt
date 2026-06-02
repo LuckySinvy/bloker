@@ -1,6 +1,7 @@
 package com.addev.listaspam.util
 
 import android.content.Context
+import android.content.SharedPreferences
 import androidx.preference.PreferenceManager
 import androidx.core.content.edit
 
@@ -8,8 +9,85 @@ const val SPAM_PREFS = "SPAM_PREFS"
 const val BLOCK_NUMBERS_KEY = "BLOCK_NUMBERS"
 const val WHITELIST_NUMBERS_KEY = "WHITELIST_NUMBERS"
 const val PATTERN_NOTES_KEY = "PATTERN_NOTES"
+private const val LEGACY_DEFAULT_PREFS_KEY = "com.addev.listaspam_preferences"
+private const val LEGACY_DEFAULT_PREFS_MIGRATION_KEY = "pref_legacy_default_prefs_migrated_v1"
 
-private fun getPrefs(context: Context) = PreferenceManager.getDefaultSharedPreferences(context)
+private fun getDefaultPrefs(context: Context): SharedPreferences =
+    PreferenceManager.getDefaultSharedPreferences(context)
+
+fun getCurrentDefaultPrefsName(context: Context): String = "${context.packageName}_preferences"
+
+fun resolveImportedPrefsName(context: Context, importedPrefsName: String): String =
+    when (importedPrefsName) {
+        LEGACY_DEFAULT_PREFS_KEY -> getCurrentDefaultPrefsName(context)
+        else -> importedPrefsName
+    }
+
+fun migrateLegacyDefaultPreferences(context: Context) {
+    val currentPrefs = getDefaultPrefs(context)
+    if (currentPrefs.getBoolean(LEGACY_DEFAULT_PREFS_MIGRATION_KEY, false)) {
+        return
+    }
+
+    val legacyPrefs = context.getSharedPreferences(LEGACY_DEFAULT_PREFS_KEY, Context.MODE_PRIVATE)
+    val legacyEntries = legacyPrefs.all
+    if (legacyEntries.isEmpty()) {
+        currentPrefs.edit { putBoolean(LEGACY_DEFAULT_PREFS_MIGRATION_KEY, true) }
+        return
+    }
+
+    val mergedPatterns = buildSet {
+        addAll(parsePatternList(legacyEntries["pref_pattern_list"] as? String))
+        addAll(parsePatternList(currentPrefs.getString("pref_pattern_list", null)))
+    }
+
+    currentPrefs.edit {
+        for ((key, value) in legacyEntries) {
+            if (key == "pref_pattern_list") {
+                continue
+            }
+            if (currentPrefs.contains(key)) {
+                continue
+            }
+            putAny(key, value)
+        }
+
+        if (mergedPatterns.isNotEmpty()) {
+            putString("pref_pattern_list", mergedPatterns.joinToString("\n"))
+        }
+        putBoolean(LEGACY_DEFAULT_PREFS_MIGRATION_KEY, true)
+    }
+
+    legacyPrefs.edit { clear() }
+}
+
+private fun getPrefs(context: Context): SharedPreferences {
+    migrateLegacyDefaultPreferences(context)
+    return getDefaultPrefs(context)
+}
+
+private fun SharedPreferences.Editor.putAny(key: String, value: Any?) {
+    when (value) {
+        is Boolean -> putBoolean(key, value)
+        is Float -> putFloat(key, value)
+        is Int -> putInt(key, value)
+        is Long -> putLong(key, value)
+        is String -> putString(key, value)
+        is Set<*> -> putStringSet(key, value.filterIsInstance<String>().toSet())
+        null -> remove(key)
+    }
+}
+
+private fun parsePatternList(patterns: String?): Set<String> {
+    if (patterns.isNullOrBlank()) {
+        return emptySet()
+    }
+
+    return patterns.split("\n")
+        .map { it.trim() }
+        .filter { it.isNotEmpty() }
+        .toSet()
+}
 
 private fun getBooleanPref(context: Context, key: String, defaultValue: Boolean): Boolean =
     getPrefs(context).getBoolean(key, defaultValue)
@@ -57,11 +135,7 @@ fun isPatternBlockingEnabled(context: Context): Boolean =
     getBooleanPref(context, "pref_enable_pattern_blocking", false)
 
 fun getBlockedPatterns(context: Context): Set<String> {
-    val patternsStr = getStringPref(context, "pref_pattern_list") ?: ""
-    return patternsStr.split("\n")
-        .map { it.trim() }
-        .filter { it.isNotEmpty() }
-        .toSet()
+    return parsePatternList(getStringPref(context, "pref_pattern_list"))
 }
 
 fun setBlockedPatterns(context: Context, patterns: Set<String>) {

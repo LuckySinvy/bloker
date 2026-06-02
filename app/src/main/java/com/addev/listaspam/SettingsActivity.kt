@@ -14,9 +14,13 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceCategory
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceGroupAdapter
+import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.MaterialToolbar
 import com.addev.listaspam.util.SpamUtils
+import com.addev.listaspam.util.getCurrentDefaultPrefsName
+import com.addev.listaspam.util.migrateLegacyDefaultPreferences
+import com.addev.listaspam.util.resolveImportedPrefsName
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -30,6 +34,7 @@ class SettingsActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        migrateLegacyDefaultPreferences(this)
         setContentView(R.layout.activity_settings)
 
         val toolbar: MaterialToolbar = findViewById(R.id.settingsToolbar)
@@ -314,7 +319,12 @@ class SettingsActivity : AppCompatActivity() {
                 }
 
                 for (prefName in jsonObject.keys()) {
-                    val sharedPreferences = getSharedPreferences(prefName, Context.MODE_PRIVATE)
+                    val resolvedPrefName = resolveImportedPrefsName(this, prefName)
+                    val sharedPreferences = if (resolvedPrefName == getCurrentDefaultPrefsName(this)) {
+                        PreferenceManager.getDefaultSharedPreferences(this)
+                    } else {
+                        getSharedPreferences(resolvedPrefName, Context.MODE_PRIVATE)
+                    }
                     sharedPreferences.edit {
                         val prefJsonObject = jsonObject.getJSONObject(prefName)
                         for (key in prefJsonObject.keys()) {
@@ -336,6 +346,8 @@ class SettingsActivity : AppCompatActivity() {
                         }
                     }
                 }
+
+                migrateLegacyDefaultPreferences(this)
 
                 runOnUiThread {
                     updateSettingsContainer()
@@ -441,7 +453,12 @@ class SettingsActivity : AppCompatActivity() {
                 }
 
                 for (prefName in jsonObject.keys()) {
-                    val sharedPreferences = getSharedPreferences(prefName, Context.MODE_PRIVATE)
+                    val resolvedPrefName = resolveImportedPrefsName(this, prefName)
+                    val sharedPreferences = if (resolvedPrefName == getCurrentDefaultPrefsName(this)) {
+                        PreferenceManager.getDefaultSharedPreferences(this)
+                    } else {
+                        getSharedPreferences(resolvedPrefName, Context.MODE_PRIVATE)
+                    }
                     sharedPreferences.edit {
 
                         val prefJsonObject = jsonObject.getJSONObject(prefName)
@@ -464,6 +481,8 @@ class SettingsActivity : AppCompatActivity() {
                         }
                     }
                 }
+
+                migrateLegacyDefaultPreferences(this)
             }
             true
         } catch (e: Exception) {
