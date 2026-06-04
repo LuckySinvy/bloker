@@ -51,7 +51,7 @@ object SyncUtils {
         val requestStartedAt = System.currentTimeMillis()
         val syncUrl = buildString {
             append(baseUrl.trim().removeSuffix("/"))
-            append("/api/v1/app-sync?compact=1")
+            append("/api/v1/app-sync?compact=true")
             lastCursor?.let {
                 append("&cursor=")
                 append(it)

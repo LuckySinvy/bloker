@@ -149,6 +149,11 @@ pub async fn get_app_sync_payload(
     headers: HeaderMap,
     Query(query): Query<AppSyncQuery>,
 ) -> Result<axum::response::Response, (StatusCode, String)> {
+    let compact_mode = query
+        .compact
+        .as_deref()
+        .map(|value| matches!(value, "1" | "true" | "TRUE" | "True"))
+        .unwrap_or(false);
     let blacklist_count = spam_number::Entity::find()
         .filter(spam_number::Column::ListType.eq(LIST_TYPE_BLACKLIST))
         .count(&state.db)
@@ -322,7 +327,7 @@ pub async fn get_app_sync_payload(
         .filter(|record| record.list_type == LIST_TYPE_WHITELIST)
         .map(map_app_sync_spam_number)
         .collect::<Vec<_>>();
-    let spam_numbers = if query.compact.unwrap_or(false) {
+    let spam_numbers = if compact_mode {
         Vec::new()
     } else {
         blacklist_numbers.clone()

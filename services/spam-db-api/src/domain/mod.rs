@@ -160,7 +160,7 @@ pub struct SpamNumberListQuery {
 
 #[derive(Debug, Deserialize, IntoParams)]
 pub struct AppSyncQuery {
-    pub compact: Option<bool>,
+    pub compact: Option<String>,
     pub cursor: Option<i64>,
 }
 
