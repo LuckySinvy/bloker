@@ -13,6 +13,7 @@
 .gradle-home
 .kotlin
 target
+data
 
 local.properties
 **/local.properties
