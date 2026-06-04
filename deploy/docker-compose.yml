@@ -1,0 +1,11 @@
+services:
+  spam-db-api:
+    build:
+      context: ..
+      dockerfile: services/spam-db-api/Dockerfile
+    image: spam-db-api:latest
+    container_name: spam-db-api
+    restart: unless-stopped
+    env_file:
+      - .env
+    network_mode: host

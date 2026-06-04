@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/patternBatchRoot"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/backgroundColor"
+    android:orientation="vertical">
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/patternBatchToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        app:navigationIcon="@drawable/back"
+        app:title="@string/pattern_batch_page_title"
+        app:subtitle="@string/pattern_batch_page_subtitle" />
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_margin="16dp"
+        android:layout_weight="1"
+        app:cardBackgroundColor="@color/surfaceColor"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="0dp"
+        app:strokeColor="@color/borderColor"
+        app:strokeWidth="1dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="18dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:text="@string/pref_pattern_list_example"
+                android:textColor="@color/textSecondaryColor"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/patternInputPreview"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:background="@drawable/item_border_rounded"
+                android:gravity="top|start"
+                android:padding="12dp"
+                android:textColor="@color/textColor"
+                android:textSize="15sp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <Button android:id="@+id/key1" style="@style/Widget.ListaSpam.KeyboardButton" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_margin="5dp" android:layout_weight="1" android:text="1" />
+                    <Button android:id="@+id/key2" style="@style/Widget.ListaSpam.KeyboardButton" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_margin="5dp" android:layout_weight="1" android:text="2" />
+                    <Button android:id="@+id/key3" style="@style/Widget.ListaSpam.KeyboardButton" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_margin="5dp" android:layout_weight="1" android:text="3" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <Button android:id="@+id/key4" style="@style/Widget.ListaSpam.KeyboardButton" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_margin="5dp" android:layout_weight="1" android:text="4" />
+                    <Button android:id="@+id/key5" style="@style/Widget.ListaSpam.KeyboardButton" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_margin="5dp" android:layout_weight="1" android:text="5" />
+                    <Button android:id="@+id/key6" style="@style/Widget.ListaSpam.KeyboardButton" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_margin="5dp" android:layout_weight="1" android:text="6" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <Button android:id="@+id/key7" style="@style/Widget.ListaSpam.KeyboardButton" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_margin="5dp" android:layout_weight="1" android:text="7" />
+                    <Button android:id="@+id/key8" style="@style/Widget.ListaSpam.KeyboardButton" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_margin="5dp" android:layout_weight="1" android:text="8" />
+                    <Button android:id="@+id/key9" style="@style/Widget.ListaSpam.KeyboardButton" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_margin="5dp" android:layout_weight="1" android:text="9" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <Button android:id="@+id/keyPlus" style="@style/Widget.ListaSpam.KeyboardButton" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_margin="5dp" android:layout_weight="1" android:text="+" />
+                    <Button android:id="@+id/key0" style="@style/Widget.ListaSpam.KeyboardButton" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_margin="5dp" android:layout_weight="1" android:text="0" />
+                    <Button android:id="@+id/keyStar" style="@style/Widget.ListaSpam.KeyboardButton" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_margin="5dp" android:layout_weight="1" android:text="*" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <Button android:id="@+id/keyNewline" style="@style/Widget.ListaSpam.KeyboardButton" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_margin="5dp" android:layout_weight="1" android:text="换行" />
+                    <Button android:id="@+id/keyDelete" style="@style/Widget.ListaSpam.KeyboardButton" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_margin="5dp" android:layout_weight="1" android:text="Del" />
+                    <Button android:id="@+id/keyDone" style="@style/Widget.ListaSpam.KeyboardButton" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_margin="5dp" android:layout_weight="1" android:text="完成" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+</LinearLayout>

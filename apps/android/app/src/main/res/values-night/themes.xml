@@ -1,0 +1,18 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <style name="Base.Theme.ListaSpam" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/primaryColor</item>
+        <item name="colorPrimaryVariant">@color/primaryColorDark</item>
+        <item name="colorSecondary">@color/primaryColor</item>
+        <item name="colorOnPrimary">@color/primaryTextOnColor</item>
+        <item name="colorSurface">@color/surfaceColor</item>
+        <item name="android:windowBackground">@color/darkBackground</item>
+        <item name="android:textColor">@color/textColor</item>
+        <item name="android:textColorSecondary">@color/textSecondaryColor</item>
+        <item name="materialButtonStyle">@style/Widget.ListaSpam.Button</item>
+        <item name="editTextStyle">@style/Widget.ListaSpam.EditText</item>
+        <item name="checkboxStyle">@style/Widget.ListaSpam.CompoundButton.CheckBox</item>
+        <item name="radioButtonStyle">@style/Widget.ListaSpam.CompoundButton.RadioButton</item>
+        <item name="toolbarStyle">@style/Widget.ListaSpam.Toolbar</item>
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay.ListaSpam</item>
+    </style>
+</resources>

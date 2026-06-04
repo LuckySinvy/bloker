@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/open_report_alert"
+        android:title="@string/report_title" />
+    <item
+        android:id="@+id/add_to_contacts_action"
+        android:title="@string/add_to_contacts" />
+    <item
+        android:id="@+id/block_action"
+        android:title="@string/block" />
+    <item
+        android:id="@+id/whitelist_action"
+        android:title="@string/add_to_whitelist" />
+
+</menu>

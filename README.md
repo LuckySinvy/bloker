@@ -1,45 +1,82 @@
-# 骚扰电话拦截器
+# Lingti Blocker Monorepo
 
-`骚扰电话拦截器` 是一个基于 Kotlin 开发的 Android 来电筛选应用，参考 `adamff-dev/spam-call-blocker-app` 重新制作了完整中文版本，并对默认配置做了中文地区本地化调整。
+这个仓库现在调整为多项目结构，目标是同时维护 Android 客户端和自建骚扰电话数据库后端。
 
-## 功能
+## 目录结构
 
-- 拦截或放行指定号码
-- 本地黑名单、白名单管理
-- 拦截隐藏号码、非联系人号码、国际来电
-- 支持按号码模式拦截，例如前缀、后缀、包含匹配
-- 联合 UnknownPhone、Tellows、Truecaller 在线号码库识别骚扰电话
-- 支持 STIR/SHAKEN 风险标记拦截
-- 支持静音骚扰来电而不是直接拒接
-- 支持号码举报
-- 支持导入/导出全部设置和名单
-- 启动时检查中文版本更新
+```text
+apps/
+  android/              Android 客户端
+services/
+  spam-db-api/          Rust + SQLite 骚扰电话数据库后端
+```
 
-## 中文版调整
+## 技术选型
 
-- 默认界面文案统一为简体中文
-- 默认查询语言和地区优先落在中国区
-- 修复上游项目中 UnknownPhone / Tellows 开关键名与设置页不一致的问题
-- 移除上游作者捐赠直链，支持页改为跳转项目主页
-- 使用独立 `applicationId`，可与原版同时安装测试
+### Android 客户端
 
-## 运行要求
+- Kotlin
+- Android Gradle
 
-- Android 10 及以上
-- 需要授予通话记录、电话状态、联系人、通话管理等权限
-- 在线号码库查询需要联网
+### 骚扰电话数据库后端
 
-## 构建
+- Rust
+- Axum
+- SeaORM
+- PostgreSQL
+
+## 快速开始
+
+### Android
 
 ```bash
+cd apps/android
 ./gradlew assembleDebug
+```
+
+### Rust 后端
+
+```bash
+cargo run -p spam-db-api
+```
+
+默认会使用：
+
+```text
+postgres://spam:spam@127.0.0.1:5432/spam_db
+```
+
+你也可以通过环境变量覆盖：
+
+```bash
+export DATABASE_URL="postgres://spam:spam@127.0.0.1:5432/spam_db"
+export BIND_ADDRESS="127.0.0.1:8080"
+```
+
+## 后端第一版接口
+
+- `GET /health`
+- `GET /api/v1/spam-reports`
+- `GET /api/v1/spam-reports/lookup?phone_number=...`
+- `POST /api/v1/spam-reports`
+- `GET /docs`
+- `GET /api-docs/openapi.json`
+
+示例请求：
+
+```json
+{
+  "phone_number": "01051428977",
+  "label": "营销骚扰",
+  "source": "manual",
+  "risk_level": 85,
+  "notes": "频繁推销贷款"
+}
 ```
 
 ## 说明
 
-- 当前源码命名空间仍保留上游的 `com.addev.listaspam`，这样可以降低重命名带来的回归风险。
-- 如果你准备长期维护并发布这个中文分支，建议后续再做一次完整包名迁移和图标品牌替换。
-
-## 许可证
-
-本项目沿用上游 GPLv3 许可证，详见 [LICENSE](LICENSE)。
+- 当前 Android 客户端仍然保留原有命名空间 `com.addev.listaspam`，以降低迁移风险。
+- Rust 后端目前是第一版骨架，优先解决自建号码库的存储、查询和人工录入。
+- Android 举报号码流程现在默认写入自建 Rust 后端，Tellows 只作为可选兼容同步渠道。
+- 下一步通常会是：认证、分页、去重策略、审核流、批量导入、客户端 API 对接。

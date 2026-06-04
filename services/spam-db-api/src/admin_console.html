@@ -1,0 +1,932 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>号码库控制台</title>
+    <style>
+      :root {
+        --bg: #f5f7fb;
+        --panel: #ffffff;
+        --line: #d7dfea;
+        --text: #1f2937;
+        --muted: #667085;
+        --primary: #2563eb;
+        --danger: #dc2626;
+        --danger-soft: #fff1f2;
+        --warning: #d97706;
+        --warning-soft: #fff7ed;
+        --shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+        --radius: 18px;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        background: var(--bg);
+        color: var(--text);
+      }
+      .topbar {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        background: rgba(255,255,255,0.94);
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid rgba(215,223,234,0.92);
+      }
+      .topbar-inner, .page {
+        max-width: 1380px;
+        margin: 0 auto;
+        padding: 0 24px;
+      }
+      .topbar-inner {
+        min-height: 72px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+      }
+      .eyebrow {
+        font-size: 11px;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: var(--muted);
+        font-weight: 700;
+      }
+      .brand h1 { margin: 6px 0 0; font-size: 24px; line-height: 1.15; }
+      .link-row { display: flex; gap: 10px; flex-wrap: wrap; }
+      .nav-link, .button {
+        border-radius: 999px;
+        border: 1px solid var(--line);
+        background: #fff;
+        color: var(--text);
+        text-decoration: none;
+        padding: 10px 14px;
+        font-size: 14px;
+        cursor: pointer;
+      }
+      .button.primary { background: var(--primary); border-color: var(--primary); color: #fff; }
+      .button.danger { background: var(--danger-soft); border-color: #fecdd3; color: var(--danger); }
+      .button.warning { background: var(--warning-soft); border-color: #fed7aa; color: var(--warning); }
+      .button.ghost { background: transparent; }
+      .page { padding-top: 28px; padding-bottom: 40px; }
+      .card, .panel, .report-card {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+      }
+      .card, .panel { padding: 22px; }
+      .stats-grid, .content-grid, .toolbar, .review-grid {
+        display: grid;
+        gap: 16px;
+      }
+      .stats-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        margin-bottom: 22px;
+      }
+      .content-grid {
+        grid-template-columns: 360px minmax(0, 1fr);
+        align-items: start;
+      }
+      .metric-label { color: var(--muted); font-size: 13px; margin-bottom: 8px; }
+      .metric-value { font-size: 34px; font-weight: 700; }
+      .stack { display: grid; gap: 22px; }
+      .form-grid { display: grid; gap: 14px; }
+      .section-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 14px;
+      }
+      .section-head h2, .panel h2 { margin: 0 0 8px; font-size: 18px; }
+      .panel p, .section-head p { margin: 0; color: var(--muted); font-size: 14px; }
+      label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; }
+      input, textarea, select {
+        width: 100%;
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 12px 14px;
+        font: inherit;
+        background: #fff;
+      }
+      textarea { min-height: 110px; resize: vertical; }
+      .inline-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+      .toolbar {
+        grid-template-columns: minmax(0, 1fr) 180px;
+        margin-bottom: 16px;
+      }
+      .review-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .report-card { padding: 18px; }
+      .report-top {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        align-items: flex-start;
+        margin-bottom: 12px;
+      }
+      .report-number { font-size: 20px; font-weight: 700; }
+      .record-meta, .small-muted {
+        color: var(--muted);
+        font-size: 13px;
+      }
+      .data-list {
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        overflow: hidden;
+        background: #fff;
+      }
+      .data-row {
+        display: grid;
+        grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) minmax(0, 1.2fr) auto;
+        gap: 12px;
+        align-items: center;
+        min-height: 52px;
+        padding: 10px 14px;
+        border-bottom: 1px solid var(--line);
+      }
+      .data-row:last-child {
+        border-bottom: none;
+      }
+      .data-row:hover {
+        background: #f8fbff;
+      }
+      .data-main {
+        min-width: 0;
+      }
+      .data-title {
+        font-size: 14px;
+        font-weight: 700;
+        line-height: 1.2;
+        color: var(--text);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .data-subtitle {
+        margin-top: 4px;
+        font-size: 12px;
+        color: var(--muted);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .data-meta {
+        min-width: 0;
+        font-size: 12px;
+        color: var(--muted);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .data-note {
+        min-width: 0;
+        font-size: 12px;
+        color: var(--muted);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .row-actions {
+        display: inline-flex;
+        gap: 8px;
+        justify-content: flex-end;
+      }
+      .row-actions .button {
+        padding: 7px 12px;
+        font-size: 12px;
+      }
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        padding: 7px 10px;
+        border-radius: 999px;
+        background: #eef4ff;
+        color: #2454c3;
+        font-size: 12px;
+        font-weight: 700;
+      }
+      .pill.pending { background: #fff7ed; color: #b45309; }
+      .pill.approved { background: #ecfdf3; color: #15803d; }
+      .pill.rejected { background: #fff1f2; color: #be123c; }
+      .empty {
+        padding: 36px 20px;
+        text-align: center;
+        color: var(--muted);
+      }
+      .helper { margin-top: 6px; color: var(--muted); font-size: 12px; }
+      .pager {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        margin-top: 14px;
+        flex-wrap: wrap;
+      }
+      .pager-info {
+        color: var(--muted);
+        font-size: 13px;
+      }
+      .pager-actions {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      .toast {
+        position: fixed;
+        right: 18px;
+        bottom: 18px;
+        background: #111827;
+        color: white;
+        border-radius: 14px;
+        padding: 12px 14px;
+        opacity: 0;
+        transform: translateY(8px);
+        pointer-events: none;
+        transition: 180ms ease;
+      }
+      .toast.show { opacity: 1; transform: translateY(0); }
+      @media (max-width: 1024px) {
+        .stats-grid, .content-grid, .review-grid { grid-template-columns: 1fr; }
+        .data-row {
+          grid-template-columns: minmax(0, 1fr);
+          gap: 8px;
+        }
+        .row-actions {
+          justify-content: flex-start;
+        }
+      }
+      @media (max-width: 720px) {
+        .topbar-inner, .page { padding-left: 16px; padding-right: 16px; }
+        .toolbar { grid-template-columns: 1fr; }
+        .metric-value { font-size: 28px; }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="topbar-inner">
+        <div class="brand">
+          <div class="eyebrow">NUMBER LIBRARY CONSOLE</div>
+          <h1>号码库控制台</h1>
+        </div>
+        <div class="link-row">
+          <a class="nav-link" href="/docs/" target="_blank" rel="noreferrer">接口文档</a>
+          <a class="nav-link" href="/api-docs/openapi.json" target="_blank" rel="noreferrer">OpenAPI JSON</a>
+          <form method="post" action="/admin/logout" style="margin:0;">
+            <button class="nav-link" type="submit">退出</button>
+          </form>
+        </div>
+      </div>
+    </header>
+
+    <main class="page">
+      <section class="stats-grid">
+        <div class="card"><div class="metric-label">已入库号码</div><div class="metric-value" id="metricTotal">-</div></div>
+        <div class="card"><div class="metric-label">黑名单 / 白名单</div><div class="metric-value" id="metricLists">-</div></div>
+        <div class="card"><div class="metric-label">累计举报</div><div class="metric-value" id="metricReported">-</div></div>
+        <div class="card"><div class="metric-label">待审核</div><div class="metric-value" id="metricPending">-</div></div>
+      </section>
+
+      <section class="content-grid">
+        <aside class="stack">
+          <section class="panel">
+            <h2 id="numberFormTitle">新增号码</h2>
+            <p>这里是最终纳入同步号码库的正式记录。</p>
+            <form class="form-grid" id="numberForm">
+              <input type="hidden" id="numberRecordId" />
+              <div>
+                <label for="phoneNumber">号码</label>
+                <input id="phoneNumber" placeholder="例如 01051428977" required />
+              </div>
+              <div>
+                <label for="numberListType">名单类型</label>
+                <select id="numberListType" required>
+                  <option value="blacklist">黑名单</option>
+                  <option value="whitelist">白名单</option>
+                </select>
+              </div>
+              <div>
+                <label for="numberLabel">标签</label>
+                <select id="numberLabel" required>
+                  <option value="loan_marketing">贷款营销</option>
+                  <option value="fake_customer_service">冒充客服</option>
+                  <option value="delivery_scam">快递诈骗</option>
+                  <option value="investment_scam">投资诈骗</option>
+                  <option value="harassment">骚扰催收</option>
+                  <option value="telemarketing">电话推销</option>
+                  <option value="not_spam">非骚扰</option>
+                </select>
+              </div>
+              <div>
+                <label for="numberNotes">备注</label>
+                <textarea id="numberNotes" placeholder="记录场景、依据、备注"></textarea>
+              </div>
+              <div class="inline-actions">
+                <button class="button primary" type="submit" id="numberSubmitButton">保存号码</button>
+                <button class="button" type="button" id="numberResetButton">重置</button>
+              </div>
+            </form>
+          </section>
+
+          <section class="panel">
+            <h2 id="ruleFormTitle">新增规则</h2>
+            <p>规则直接进入同步规则库。</p>
+            <form class="form-grid" id="ruleForm">
+              <input type="hidden" id="ruleRecordId" />
+              <div>
+                <label for="rulePattern">规则</label>
+                <input id="rulePattern" placeholder="例如 01021* 或 *95528" required />
+                <div class="helper">只允许数字、`+`、`*`，长度 2-20，禁止 `**` 和 `++`。</div>
+              </div>
+              <div>
+                <label for="ruleLabel">标签</label>
+                <select id="ruleLabel" required>
+                  <option value="loan_marketing">贷款营销</option>
+                  <option value="fake_customer_service">冒充客服</option>
+                  <option value="delivery_scam">快递诈骗</option>
+                  <option value="investment_scam">投资诈骗</option>
+                  <option value="harassment">骚扰催收</option>
+                  <option value="telemarketing">电话推销</option>
+                  <option value="not_spam">非骚扰</option>
+                </select>
+              </div>
+              <div>
+                <label for="ruleNotes">备注</label>
+                <textarea id="ruleNotes" placeholder="记录命中场景、样本来源、适用说明"></textarea>
+              </div>
+              <div class="inline-actions">
+                <button class="button primary" type="submit" id="ruleSubmitButton">保存规则</button>
+                <button class="button" type="button" id="ruleResetButton">重置</button>
+              </div>
+            </form>
+          </section>
+        </aside>
+
+        <section class="stack">
+          <section class="panel">
+            <div class="section-head">
+              <div>
+                <h2>待审核举报</h2>
+                <p>举报默认只进入待审核队列，由控制台决定是否纳入同步号码库。</p>
+              </div>
+            </div>
+            <div class="toolbar">
+              <input id="reportSearchInput" placeholder="搜索号码、标签、备注、审核说明" />
+              <select id="reportStatusFilter">
+                <option value="">全部状态</option>
+                <option value="pending">待审核</option>
+                <option value="approved">已通过</option>
+                <option value="rejected">已拒绝</option>
+              </select>
+            </div>
+            <div class="data-list" id="reportRecords"></div>
+            <div class="empty" id="reportEmptyState" style="display:none;">当前没有匹配的举报记录。</div>
+          </section>
+
+          <section class="panel">
+            <div class="section-head">
+              <div>
+                <h2>黑名单号码</h2>
+                <p>这里的号码会同步到 Android 的黑名单。</p>
+              </div>
+            </div>
+            <div class="toolbar">
+              <input id="blacklistSearchInput" placeholder="搜索号码、标签、备注" />
+              <select id="blacklistLabelFilter">
+                <option value="">全部标签</option>
+                <option value="loan_marketing">贷款营销</option>
+                <option value="fake_customer_service">冒充客服</option>
+                <option value="delivery_scam">快递诈骗</option>
+                <option value="investment_scam">投资诈骗</option>
+                <option value="harassment">骚扰催收</option>
+                <option value="telemarketing">电话推销</option>
+                <option value="not_spam">非骚扰</option>
+              </select>
+            </div>
+            <div class="data-list" id="blacklistRecords"></div>
+            <div class="empty" id="blacklistEmptyState" style="display:none;">当前没有匹配的黑名单记录。</div>
+            <div class="pager">
+              <div class="pager-info" id="blacklistPageInfo">第 1 / 1 页</div>
+              <div class="pager-actions">
+                <button class="button ghost" type="button" id="blacklistPrevButton">上一页</button>
+                <button class="button ghost" type="button" id="blacklistNextButton">下一页</button>
+              </div>
+            </div>
+          </section>
+
+          <section class="panel">
+            <div class="section-head">
+              <div>
+                <h2>白名单号码</h2>
+                <p>这里的号码会同步到 Android 白名单，并优先放行。</p>
+              </div>
+            </div>
+            <div class="toolbar">
+              <input id="whitelistSearchInput" placeholder="搜索号码、标签、备注" />
+              <select id="whitelistLabelFilter">
+                <option value="">全部标签</option>
+                <option value="loan_marketing">贷款营销</option>
+                <option value="fake_customer_service">冒充客服</option>
+                <option value="delivery_scam">快递诈骗</option>
+                <option value="investment_scam">投资诈骗</option>
+                <option value="harassment">骚扰催收</option>
+                <option value="telemarketing">电话推销</option>
+                <option value="not_spam">非骚扰</option>
+              </select>
+            </div>
+            <div class="data-list" id="whitelistRecords"></div>
+            <div class="empty" id="whitelistEmptyState" style="display:none;">当前没有匹配的白名单记录。</div>
+            <div class="pager">
+              <div class="pager-info" id="whitelistPageInfo">第 1 / 1 页</div>
+              <div class="pager-actions">
+                <button class="button ghost" type="button" id="whitelistPrevButton">上一页</button>
+                <button class="button ghost" type="button" id="whitelistNextButton">下一页</button>
+              </div>
+            </div>
+          </section>
+
+          <section class="panel">
+            <div class="section-head">
+              <div>
+                <h2>规则列表</h2>
+                <p>与 Android 模式规则保持一致，可直接维护前缀、后缀和包含式规则。</p>
+              </div>
+            </div>
+            <div class="toolbar">
+              <input id="ruleSearchInput" placeholder="搜索规则、标签、备注" />
+              <select id="ruleLabelFilter">
+                <option value="">全部标签</option>
+                <option value="loan_marketing">贷款营销</option>
+                <option value="fake_customer_service">冒充客服</option>
+                <option value="delivery_scam">快递诈骗</option>
+                <option value="investment_scam">投资诈骗</option>
+                <option value="harassment">骚扰催收</option>
+                <option value="telemarketing">电话推销</option>
+                <option value="not_spam">非骚扰</option>
+              </select>
+            </div>
+            <div class="data-list" id="ruleRecords"></div>
+            <div class="empty" id="ruleEmptyState" style="display:none;">当前没有匹配的规则记录。</div>
+          </section>
+        </section>
+      </section>
+    </main>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+      const PAGE_SIZE = 50;
+      const state = {
+        numbers: {
+          blacklist: { records: [], page: 1, totalPages: 0, total: 0, keyword: "", label: "" },
+          whitelist: { records: [], page: 1, totalPages: 0, total: 0, keyword: "", label: "" }
+        },
+        rules: [],
+        reports: []
+      };
+      const refs = {
+        metricTotal: document.getElementById("metricTotal"),
+        metricLists: document.getElementById("metricLists"),
+        metricReported: document.getElementById("metricReported"),
+        metricPending: document.getElementById("metricPending"),
+        reportRecords: document.getElementById("reportRecords"),
+        reportEmptyState: document.getElementById("reportEmptyState"),
+        reportSearchInput: document.getElementById("reportSearchInput"),
+        reportStatusFilter: document.getElementById("reportStatusFilter"),
+        blacklistRecords: document.getElementById("blacklistRecords"),
+        blacklistEmptyState: document.getElementById("blacklistEmptyState"),
+        blacklistPageInfo: document.getElementById("blacklistPageInfo"),
+        blacklistPrevButton: document.getElementById("blacklistPrevButton"),
+        blacklistNextButton: document.getElementById("blacklistNextButton"),
+        whitelistRecords: document.getElementById("whitelistRecords"),
+        whitelistEmptyState: document.getElementById("whitelistEmptyState"),
+        whitelistPageInfo: document.getElementById("whitelistPageInfo"),
+        whitelistPrevButton: document.getElementById("whitelistPrevButton"),
+        whitelistNextButton: document.getElementById("whitelistNextButton"),
+        ruleRecords: document.getElementById("ruleRecords"),
+        ruleEmptyState: document.getElementById("ruleEmptyState"),
+        numberFormTitle: document.getElementById("numberFormTitle"),
+        numberForm: document.getElementById("numberForm"),
+        numberRecordId: document.getElementById("numberRecordId"),
+        phoneNumber: document.getElementById("phoneNumber"),
+        numberListType: document.getElementById("numberListType"),
+        numberLabel: document.getElementById("numberLabel"),
+        numberNotes: document.getElementById("numberNotes"),
+        numberSubmitButton: document.getElementById("numberSubmitButton"),
+        numberResetButton: document.getElementById("numberResetButton"),
+        blacklistSearchInput: document.getElementById("blacklistSearchInput"),
+        blacklistLabelFilter: document.getElementById("blacklistLabelFilter"),
+        whitelistSearchInput: document.getElementById("whitelistSearchInput"),
+        whitelistLabelFilter: document.getElementById("whitelistLabelFilter"),
+        ruleFormTitle: document.getElementById("ruleFormTitle"),
+        ruleForm: document.getElementById("ruleForm"),
+        ruleRecordId: document.getElementById("ruleRecordId"),
+        rulePattern: document.getElementById("rulePattern"),
+        ruleLabel: document.getElementById("ruleLabel"),
+        ruleNotes: document.getElementById("ruleNotes"),
+        ruleSubmitButton: document.getElementById("ruleSubmitButton"),
+        ruleResetButton: document.getElementById("ruleResetButton"),
+        ruleSearchInput: document.getElementById("ruleSearchInput"),
+        ruleLabelFilter: document.getElementById("ruleLabelFilter"),
+        toast: document.getElementById("toast")
+      };
+
+      refs.numberForm.addEventListener("submit", onSubmitNumber);
+      refs.numberResetButton.addEventListener("click", resetNumberForm);
+      refs.numberListType.addEventListener("change", syncNumberLabelForListType);
+      refs.blacklistSearchInput.addEventListener("keydown", onBlacklistSearchKeydown);
+      refs.blacklistLabelFilter.addEventListener("change", () => applyNumberFilters("blacklist"));
+      refs.blacklistPrevButton.addEventListener("click", () => changeNumberPage("blacklist", -1));
+      refs.blacklistNextButton.addEventListener("click", () => changeNumberPage("blacklist", 1));
+      refs.whitelistSearchInput.addEventListener("keydown", onWhitelistSearchKeydown);
+      refs.whitelistLabelFilter.addEventListener("change", () => applyNumberFilters("whitelist"));
+      refs.whitelistPrevButton.addEventListener("click", () => changeNumberPage("whitelist", -1));
+      refs.whitelistNextButton.addEventListener("click", () => changeNumberPage("whitelist", 1));
+      refs.ruleForm.addEventListener("submit", onSubmitRule);
+      refs.ruleResetButton.addEventListener("click", resetRuleForm);
+      refs.ruleSearchInput.addEventListener("input", renderRules);
+      refs.ruleLabelFilter.addEventListener("change", renderRules);
+      refs.reportSearchInput.addEventListener("input", renderReports);
+      refs.reportStatusFilter.addEventListener("change", renderReports);
+
+      void loadDashboard();
+
+      async function loadDashboard() {
+        await Promise.all([loadStats(), loadReports(), loadNumberPages(), loadRules()]);
+      }
+
+      async function loadStats() {
+        const response = await fetch("/api/v1/spam-reports/stats");
+        const data = await response.json();
+        refs.metricTotal.textContent = data.total_records;
+        refs.metricLists.textContent = `${data.blacklist_records} / ${data.whitelist_records}`;
+        refs.metricReported.textContent = data.reported_records;
+        refs.metricPending.textContent = data.pending_records;
+      }
+
+      async function loadReports() {
+        const response = await fetch("/api/v1/spam-reports");
+        state.reports = await response.json();
+        renderReports();
+      }
+
+      async function loadNumberPages() {
+        await Promise.all([loadNumbers("blacklist"), loadNumbers("whitelist")]);
+      }
+
+      async function loadNumbers(listKey) {
+        const listState = state.numbers[listKey];
+        const params = new URLSearchParams({
+          page: String(listState.page),
+          per_page: String(PAGE_SIZE),
+          list_type: listKey
+        });
+        if (listState.keyword) params.set("keyword", listState.keyword);
+        if (listState.label) params.set("label", listState.label);
+
+        const response = await fetch(`/api/v1/spam-numbers?${params.toString()}`);
+        if (!response.ok) {
+          showToast("号码列表加载失败");
+          return;
+        }
+        const data = await response.json();
+        listState.records = data.records || [];
+        listState.page = data.page || 1;
+        listState.totalPages = data.total_pages || 0;
+        listState.total = data.total || 0;
+        renderNumberList(listKey);
+      }
+
+      async function loadRules() {
+        const response = await fetch("/api/v1/pattern-rules");
+        state.rules = await response.json();
+        renderRules();
+      }
+
+      function renderReports() {
+        const keyword = refs.reportSearchInput.value.trim().toLowerCase();
+        const status = refs.reportStatusFilter.value.trim();
+        const filtered = state.reports.filter((record) => {
+          const matchesKeyword =
+            !keyword ||
+            record.normalized_number.toLowerCase().includes(keyword) ||
+            record.raw_number.toLowerCase().includes(keyword) ||
+            record.label.toLowerCase().includes(keyword) ||
+            (record.notes || "").toLowerCase().includes(keyword) ||
+            (record.review_notes || "").toLowerCase().includes(keyword);
+          const matchesStatus = !status || record.status === status;
+          return matchesKeyword && matchesStatus;
+        });
+
+        refs.reportRecords.innerHTML = "";
+        refs.reportEmptyState.style.display = filtered.length ? "none" : "block";
+        filtered.forEach((record) => {
+          const row = document.createElement("div");
+          row.className = "data-row";
+          row.innerHTML = `
+            <div class="data-main">
+              <div class="data-title">${escapeHtml(record.raw_number)}</div>
+              <div class="data-subtitle">${formatLabel(record.label)} · ${formatDate(record.created_at)}</div>
+            </div>
+            <div class="data-meta"><span class="pill ${escapeHtml(record.status)}">${formatStatus(record.status)}</span></div>
+            <div class="data-note">${escapeHtml(record.review_notes || record.notes || "暂无说明")}</div>
+            <div class="row-actions">
+              <button class="button warning" type="button" data-approve="${record.id}">通过并纳入库</button>
+              <button class="button primary" type="button" data-pass="${record.id}">仅标记通过</button>
+              <button class="button danger" type="button" data-reject="${record.id}">拒绝</button>
+            </div>
+          `;
+          row.querySelector("[data-approve]").addEventListener("click", () => reviewReport(record, "approved", true));
+          row.querySelector("[data-pass]").addEventListener("click", () => reviewReport(record, "approved", false));
+          row.querySelector("[data-reject]").addEventListener("click", () => reviewReport(record, "rejected", false));
+          refs.reportRecords.appendChild(row);
+        });
+      }
+
+      function renderNumberList(listKey) {
+        const isBlacklist = listKey === "blacklist";
+        const listState = state.numbers[listKey];
+        const records = listState.records;
+        const container = isBlacklist ? refs.blacklistRecords : refs.whitelistRecords;
+        const emptyState = isBlacklist ? refs.blacklistEmptyState : refs.whitelistEmptyState;
+        const pageInfo = isBlacklist ? refs.blacklistPageInfo : refs.whitelistPageInfo;
+        const prevButton = isBlacklist ? refs.blacklistPrevButton : refs.whitelistPrevButton;
+        const nextButton = isBlacklist ? refs.blacklistNextButton : refs.whitelistNextButton;
+        const emptyMessage = isBlacklist ? "当前没有匹配的黑名单记录。" : "当前没有匹配的白名单记录。";
+
+        container.innerHTML = "";
+        emptyState.style.display = records.length ? "none" : "block";
+        emptyState.textContent = emptyMessage;
+        records.forEach((record) => {
+          const row = document.createElement("div");
+          row.className = "data-row";
+          row.innerHTML = `
+            <div class="data-main">
+              <div class="data-title">${escapeHtml(record.raw_number)}</div>
+              <div class="data-subtitle">${escapeHtml(record.normalized_number)}</div>
+            </div>
+            <div class="data-meta">${formatLabel(record.label)} · ${formatListType(record.list_type)}</div>
+            <div class="data-note">${escapeHtml(record.notes || "暂无备注")}</div>
+            <div class="row-actions">
+              <button class="button" type="button" data-edit="${record.id}">编辑</button>
+              <button class="button danger" type="button" data-delete="${record.id}">删除</button>
+            </div>
+          `;
+          row.querySelector("[data-edit]").addEventListener("click", () => fillNumberForm(record));
+          row.querySelector("[data-delete]").addEventListener("click", () => removeNumber(record.id));
+          container.appendChild(row);
+        });
+
+        const totalPages = Math.max(listState.totalPages, 1);
+        pageInfo.textContent = `第 ${listState.page} / ${totalPages} 页，共 ${listState.total} 条`;
+        prevButton.disabled = listState.page <= 1;
+        nextButton.disabled = listState.totalPages === 0 || listState.page >= listState.totalPages;
+      }
+
+      function onBlacklistSearchKeydown(event) {
+        if (event.key !== "Enter") return;
+        event.preventDefault();
+        void applyNumberFilters("blacklist");
+      }
+
+      function onWhitelistSearchKeydown(event) {
+        if (event.key !== "Enter") return;
+        event.preventDefault();
+        void applyNumberFilters("whitelist");
+      }
+
+      async function applyNumberFilters(listKey) {
+        const listState = state.numbers[listKey];
+        const isBlacklist = listKey === "blacklist";
+        listState.keyword = (isBlacklist ? refs.blacklistSearchInput.value : refs.whitelistSearchInput.value).trim();
+        listState.label = (isBlacklist ? refs.blacklistLabelFilter.value : refs.whitelistLabelFilter.value).trim();
+        listState.page = 1;
+        await loadNumbers(listKey);
+      }
+
+      async function changeNumberPage(listKey, delta) {
+        const listState = state.numbers[listKey];
+        const nextPage = listState.page + delta;
+        if (nextPage < 1) return;
+        if (listState.totalPages > 0 && nextPage > listState.totalPages) return;
+        listState.page = nextPage;
+        await loadNumbers(listKey);
+      }
+
+      function renderRules() {
+        const keyword = refs.ruleSearchInput.value.trim().toLowerCase();
+        const label = refs.ruleLabelFilter.value.trim();
+        const filtered = state.rules.filter((rule) => {
+          const matchesKeyword =
+            !keyword ||
+            rule.pattern.toLowerCase().includes(keyword) ||
+            rule.label.toLowerCase().includes(keyword) ||
+            (rule.notes || "").toLowerCase().includes(keyword);
+          const matchesLabel = !label || rule.label === label;
+          return matchesKeyword && matchesLabel;
+        });
+
+        refs.ruleRecords.innerHTML = "";
+        refs.ruleEmptyState.style.display = filtered.length ? "none" : "block";
+        filtered.forEach((rule) => {
+          const row = document.createElement("div");
+          row.className = "data-row";
+          row.innerHTML = `
+            <div class="data-main">
+              <div class="data-title">${escapeHtml(rule.pattern)}</div>
+              <div class="data-subtitle">${formatLabel(rule.label)}</div>
+            </div>
+            <div class="data-meta">更新时间：${formatDate(rule.updated_at)}</div>
+            <div class="data-note">${escapeHtml(rule.notes || "暂无备注")}</div>
+            <div class="row-actions">
+              <button class="button" type="button" data-edit="${rule.id}">编辑</button>
+              <button class="button danger" type="button" data-delete="${rule.id}">删除</button>
+            </div>
+          `;
+          row.querySelector("[data-edit]").addEventListener("click", () => fillRuleForm(rule));
+          row.querySelector("[data-delete]").addEventListener("click", () => removeRule(rule.id));
+          refs.ruleRecords.appendChild(row);
+        });
+      }
+
+      async function onSubmitNumber(event) {
+        event.preventDefault();
+        const id = refs.numberRecordId.value.trim();
+        const payload = {
+          phone_number: refs.phoneNumber.value.trim(),
+          list_type: refs.numberListType.value,
+          label: refs.numberLabel.value,
+          notes: refs.numberNotes.value.trim() || null
+        };
+        const response = await fetch(id ? `/api/v1/spam-numbers/${id}` : "/api/v1/spam-numbers", {
+          method: id ? "PUT" : "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+        if (!response.ok) {
+          showToast("号码保存失败");
+          return;
+        }
+        resetNumberForm();
+        await Promise.all([loadStats(), loadNumberPages()]);
+        showToast(id ? "号码已更新" : "号码已创建");
+      }
+
+      async function onSubmitRule(event) {
+        event.preventDefault();
+        const id = refs.ruleRecordId.value.trim();
+        const payload = {
+          pattern: refs.rulePattern.value.trim(),
+          label: refs.ruleLabel.value,
+          notes: refs.ruleNotes.value.trim() || null
+        };
+        const response = await fetch(id ? `/api/v1/pattern-rules/${id}` : "/api/v1/pattern-rules", {
+          method: id ? "PUT" : "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+        if (!response.ok) {
+          showToast("规则保存失败，请确认格式合法");
+          return;
+        }
+        resetRuleForm();
+        await loadDashboard();
+        showToast(id ? "规则已更新" : "规则已创建");
+      }
+
+      async function reviewReport(record, status, promote) {
+        const reviewNotes = window.prompt("审核说明（可留空）", record.review_notes || "") ?? "";
+        const response = await fetch(`/api/v1/spam-reports/${record.id}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            status,
+            review_notes: reviewNotes || null,
+            promote_to_library: promote
+          })
+        });
+        if (!response.ok) {
+          showToast("审核操作失败");
+          return;
+        }
+        await loadDashboard();
+        showToast(status === "rejected" ? "举报已拒绝" : promote ? "举报已通过并纳入号码库" : "举报已标记通过");
+      }
+
+      function fillRuleForm(rule) {
+        refs.ruleFormTitle.textContent = "编辑规则";
+        refs.ruleSubmitButton.textContent = "更新规则";
+        refs.ruleRecordId.value = rule.id;
+        refs.rulePattern.value = rule.pattern;
+        refs.ruleLabel.value = rule.label;
+        refs.ruleNotes.value = rule.notes || "";
+      }
+
+      function fillNumberForm(record) {
+        refs.numberFormTitle.textContent = "编辑号码";
+        refs.numberSubmitButton.textContent = "更新号码";
+        refs.numberRecordId.value = record.id;
+        refs.phoneNumber.value = record.raw_number;
+        refs.numberListType.value = record.list_type || (record.label === "not_spam" ? "whitelist" : "blacklist");
+        refs.numberLabel.value = record.label;
+        refs.numberNotes.value = record.notes || "";
+      }
+
+      function resetNumberForm() {
+        refs.numberFormTitle.textContent = "新增号码";
+        refs.numberSubmitButton.textContent = "保存号码";
+        refs.numberForm.reset();
+        refs.numberRecordId.value = "";
+        refs.numberListType.value = "blacklist";
+        syncNumberLabelForListType();
+      }
+
+      function syncNumberLabelForListType() {
+        if (refs.numberListType.value === "whitelist") {
+          refs.numberLabel.value = "not_spam";
+        } else if (refs.numberLabel.value === "not_spam") {
+          refs.numberLabel.value = "telemarketing";
+        }
+      }
+
+      function resetRuleForm() {
+        refs.ruleFormTitle.textContent = "新增规则";
+        refs.ruleSubmitButton.textContent = "保存规则";
+        refs.ruleForm.reset();
+        refs.ruleRecordId.value = "";
+      }
+
+      async function removeRule(id) {
+        if (!window.confirm("确认删除这条规则？")) return;
+        const response = await fetch(`/api/v1/pattern-rules/${id}`, { method: "DELETE" });
+        if (!response.ok) {
+          showToast("规则删除失败");
+          return;
+        }
+        await loadDashboard();
+        showToast("规则已删除");
+      }
+
+      async function removeNumber(id) {
+        if (!window.confirm("确认删除这条号码？")) return;
+        const response = await fetch(`/api/v1/spam-numbers/${id}`, { method: "DELETE" });
+        if (!response.ok) {
+          showToast("号码删除失败");
+          return;
+        }
+        await Promise.all([loadStats(), loadNumberPages()]);
+        showToast("号码已删除");
+      }
+
+      function formatDate(value) {
+        try { return new Date(value).toLocaleString("zh-CN"); } catch { return value; }
+      }
+
+      function formatLabel(value) {
+        const map = {
+          loan_marketing: "贷款营销",
+          fake_customer_service: "冒充客服",
+          delivery_scam: "快递诈骗",
+          investment_scam: "投资诈骗",
+          harassment: "骚扰催收",
+          telemarketing: "电话推销",
+          not_spam: "非骚扰"
+        };
+        return map[value] || value || "未标注";
+      }
+
+      function formatListType(value) {
+        return value === "whitelist" ? "白名单" : "黑名单";
+      }
+
+      function formatStatus(value) {
+        const map = {
+          pending: "待审核",
+          approved: "已通过",
+          rejected: "已拒绝"
+        };
+        return map[value] || value;
+      }
+
+      function escapeHtml(value) {
+        return String(value)
+          .replaceAll("&", "&amp;")
+          .replaceAll("<", "&lt;")
+          .replaceAll(">", "&gt;")
+          .replaceAll('"', "&quot;")
+          .replaceAll("'", "&#39;");
+      }
+
+      function showToast(message) {
+        refs.toast.textContent = message;
+        refs.toast.classList.add("show");
+        clearTimeout(showToast.timer);
+        showToast.timer = setTimeout(() => refs.toast.classList.remove("show"), 1800);
+      }
+    </script>
+  </body>
+</html>
